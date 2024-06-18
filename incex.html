@@ -13,19 +13,24 @@
   </head>
   <body class="h-full dark:bg-black">
     <div x-data="scssConverter()" class="h-full flex flex-col">
-      <div class="flex w-full px-2 items-center justify-center">
+      <!-- <div class="flex w-full px-2 items-center justify-center">
         <h1 class="dark:text-white text-lg py-6 font-bold">
           SCSS REM Converter - form base 62.5% to 100%
         </h1>
-      </div>
+      </div> -->
       <div class="flex w-full p-2 items-center grow">
         <div class="grow h-100 h-full flex">
           <div class="xmax-w-sm mx-auto flex flex-col w-full">
             <label
               for="scssInput"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >Enter SCSS:</label
+              class="block text-sm font-medium text-gray-900 dark:text-white"
+              >Insert your CSS/SCSS:</label
             >
+            <div class="mb-2">
+              <small class="text-sm text-gray-900 dark:text-gray-500"
+                >my advice: use prettier formatter before</small
+              >
+            </div>
             <div class="grow">
               <textarea
                 id="scssInput"
@@ -38,7 +43,7 @@
           </div>
         </div>
         <div class="flex flex-col gap-2 items-center justify-center px-2">
-          <button
+          <!-- <button
             @click="convertScss()"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           >
@@ -76,11 +81,29 @@
                 d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"
               />
             </svg>
-          </button>
+          </button> -->
           <button
+            :class="scssInput === '' ? 'opacity-45 cursor-not-allowed' : ''"
             @click="convertAndCopy()"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            class="text-white bg-blue-700 flex gap-2 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-arrow-repeat"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
+              />
+            </svg>
+
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -106,16 +129,22 @@
           <div class="xmax-w-sm mx-auto flex flex-col w-full">
             <label
               for="scssOutput"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              class="block text-sm font-medium text-gray-900 dark:text-white"
               >Converted</label
             >
+            <div class="mb-2">
+              <small class="text-sm text-gray-900 dark:text-gray-500"
+                >here below is the preview of what is in your clipboard</small
+              >
+            </div>
             <div class="grow">
               <textarea
+                :class="scssOutput === '' ? 'border border-gray-300 dark:border-gray-600' : 'border-green-300 dark:border-green-600'"
                 id="scssOutput"
                 x-model="scssOutput"
                 rows="10"
                 readonly
-                class="h-full block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="h-full block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               ></textarea>
             </div>
           </div>
@@ -147,11 +176,33 @@
           },
 
           convertAndCopy() {
-            this.convertScss();
-            this.copyToClipboard();
+            if (this.scssInput !== "") {
+              this.convertScss();
+              this.copyToClipboard();
+            }
+          },
+          syncScroll(event) {
+            const otherTextarea =
+              event.target.id === "scssInput"
+                ? document.getElementById("scssOutput")
+                : document.getElementById("scssInput");
+            otherTextarea.scrollTop = event.target.scrollTop;
+            otherTextarea.scrollLeft = event.target.scrollLeft;
           },
         };
       }
+      document.addEventListener("alpine:init", () => {
+        const inputTextarea = document.getElementById("scssInput");
+        const outputTextarea = document.getElementById("scssOutput");
+
+        inputTextarea.addEventListener("scroll", (event) => {
+          scssConverter().syncScroll(event);
+        });
+
+        outputTextarea.addEventListener("scroll", (event) => {
+          scssConverter().syncScroll(event);
+        });
+      });
     </script>
   </body>
 </html>
