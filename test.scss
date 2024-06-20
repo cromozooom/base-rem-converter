@@ -1,63 +1,18 @@
+// some comments rem remains as it is: 23rem converter
 body {
-  font-size: 1rem;
+  font-size: 1rem; // this change value 1
   .test-1 {
-    width: 30rem;
-    height: calc(100vh - 10rem);
+    width: 30rem; // this change
+    height: calc(100vh - 10rem); // this change value 10
   }
 }
-$width: 30rem;
+$width: 30rem; // this change value 30
 
-body {
-  font-size: 1rem;
-  .test-1 {
-    width: 30rem;
-    height: calc(100vh - 10rem);
-  }
+.test-2rem { // this remains 2
+  height: 2rem; // this change value 2
 }
-$width: 30rem;
 
-body {
-  font-size: 1rem;
-  .test-1 {
-    width: 30rem;
-    height: calc(100vh - 10rem);
-  }
-}
-$width: 30rem;
-
-body {
-  font-size: 1rem;
-  .test-1 {
-    width: 30rem;
-    height: calc(100vh - 10rem);
-  }
-}
-$width: 30rem;
-
-body {
-  font-size: 1rem;
-  .test-1 {
-    width: 30rem;
-    height: calc(100vh - 10rem);
-  }
-}
-$width: 30rem;
-
-body {
-  font-size: 1rem;
-  .test-1 {
-    width: 30rem;
-    height: calc(100vh - 10rem);
-  }
-}
-$width: 30rem;
-
-body {
-  font-size: 1rem;
-  .test-1 {
-    width: 30rem;
-    height: calc(100vh - 10rem);
-  }
-}
-$width: 30rem;
-
+$dim: (
+  "3rem": 3rem, // this change value but not key
+  "3": 3rem // this change value but not key
+)
