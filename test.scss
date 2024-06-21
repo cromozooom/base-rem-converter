@@ -6,6 +6,15 @@ body {
     --size: #{$size};
     padding: 0 0.5rem; // TODO: this fails
   }
+  .panel-body {
+    background: repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 0.9rem,
+      $gray-200 0.3rem,
+      $gray-200 1.2rem
+    ); // TODO: This fails
+  }
   --test: 2rem; // this change value 2
   font-size: 1rem; // this change value 1
   .test-1 {
