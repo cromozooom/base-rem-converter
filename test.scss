@@ -1,13 +1,29 @@
 // some comments rem remains as it is: 23rem converter
 body {
+  width: calc(100% - #{$mee-admin-width} - 0.4rem); // this change value 0.4
+  &__init {
+    --size: #{$size};
+    padding: 0 0.5rem; // this change value 0.5
+  }
+  .panel-body {
+    background: repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 0.9rem,
+      $gray-200 0.3rem,
+      $gray-200 1.2rem
+    ); // this change values 0.9, 0.3, 1.2
+  }
   --test: 2rem; // this change value 2
   font-size: 1rem; // this change value 1
   .test-1 {
+    height: -30rem; // this change 30
     width: 30rem; // this change 30
     height: calc(100vh - 10rem); // this change value 10
     .test-1 {
       width: 30rem; // this change 30
       height: calc(100vh - 10rem); // this change value 10
+      padding: 0 0.5rem; // replace 0.5
     }
   }
 }
@@ -18,9 +34,9 @@ $width: 38rem; // this change value 38
 .test-2rem {
   height: 2rem; // this change value 2
 }
-// this remains 2
+// TODO: this FAILS: not remains 2
 body .test-2rem {
-  height: 2rem; // this change value 2
+  height: 2rem; //  this change value 2
 }
 
 $dim: (
