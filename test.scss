@@ -1,10 +1,9 @@
 // some comments rem remains as it is: 23rem converter
 body {
-  // TODO: below this line in calc fails
-  width: calc(100% - #{$mee-admin-width} - 0.4rem);
+  width: calc(100% - #{$mee-admin-width} - 0.4rem); // this change value 0.4
   &__init {
     --size: #{$size};
-    padding: 0 0.5rem; // TODO: this fails
+    padding: 0 0.5rem; // this change value 0.5
   }
   .panel-body {
     background: repeating-linear-gradient(
@@ -13,7 +12,7 @@ body {
       transparent 0.9rem,
       $gray-200 0.3rem,
       $gray-200 1.2rem
-    ); // TODO: This fails
+    ); // this change values 0.9, 0.3, 1.2
   }
   --test: 2rem; // this change value 2
   font-size: 1rem; // this change value 1
