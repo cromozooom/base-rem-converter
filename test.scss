@@ -1,8 +1,10 @@
 // some comments rem remains as it is: 23rem converter
 body {
+  // TODO: below this line in calc fails
+  width: calc(100% - #{$mee-admin-width} - 0.4rem);
   &__init {
     --size: #{$size};
-    padding: 0 0.5rem; // this fails
+    padding: 0 0.5rem; // TODO: this fails
   }
   --test: 2rem; // this change value 2
   font-size: 1rem; // this change value 1
