@@ -200,64 +200,66 @@
         return {
           scssInput: "",
           scssOutput: "",
+
           convertScss() {
             const regex = /(\b\d*\.?\d+)rem\b/g;
+            const classRegex = /\.([a-zA-Z0-9-_]*[-]?\d*\.?\d*rem)\b/g;
 
-            this.scssOutput = this.scssInput.replace(
+            // Convert input to a single line string
+            let inputString = this.scssInput.replace(/\n/g, "%%enter%%");
+            console.log("Single line input: ", inputString);
+
+            // Temporarily replace instances of 'rem"' with '%%rem"'
+            inputString = inputString.replace(/rem"/g, '%%rem"');
+            inputString = inputString.replace(/rem'/g, "%%rem'");
+
+            // Find and log all matches for class names with "rem" to skip them
+            let classMatches = [];
+            let match;
+            while ((match = classRegex.exec(inputString)) !== null) {
+              classMatches.push(match[0]);
+              console.log("Class match found: ", match[0]);
+            }
+
+            // Replace all "rem" values with the converted values, except in class names
+            this.scssOutput = inputString.replace(
               regex,
               (match, p1, offset, string) => {
                 const beforeMatch = string.slice(0, offset);
                 const afterMatch = string.slice(offset + match.length);
 
-                // Split the input by lines to better detect context
-                const lines = beforeMatch.split("\n");
-                const currentLine = lines[lines.length - 1].trim();
+                // Check if the match is part of a class name
+                const isClassName = classMatches.some((className) => {
+                  const classNameIndex = string.indexOf(className);
+                  return (
+                    classNameIndex !== -1 &&
+                    classNameIndex < offset &&
+                    classNameIndex + className.length > offset
+                  );
+                });
 
-                // Check if the match is within a CSS property value, an SCSS map value, or an SCSS variable
-                const isScssVariable = /^\$/.test(currentLine);
-                const isInsideCssProperty =
-                  beforeMatch.includes("{") &&
-                  beforeMatch.lastIndexOf("{") > beforeMatch.lastIndexOf("}");
-                const isInsideScssMap =
-                  beforeMatch.includes("(") &&
-                  beforeMatch.lastIndexOf("(") > beforeMatch.lastIndexOf(")");
-                const isInsideCalc = beforeMatch.includes("calc(");
+                console.log(`Processing match: ${match}`);
+                console.log(`isClassName: ${isClassName}`);
+                console.log(`Before match: ${beforeMatch}`);
+                console.log(`After match: ${afterMatch}`);
 
-                console.log(`Match: ${match}`);
-                console.log(`isScssVariable: ${isScssVariable}`);
-                console.log(`isInsideCssProperty: ${isInsideCssProperty}`);
-                console.log(`isInsideScssMap: ${isInsideScssMap}`);
-                console.log(`isInsideCalc: ${isInsideCalc}`);
-                console.log(`Current Line: ${currentLine}`);
-                console.log(`------------------------------------`);
-
-                // Find the last colon before the match
-                const colonIndex = beforeMatch.lastIndexOf(":");
-                const commaIndex = beforeMatch.lastIndexOf(",");
-                const openParenIndex = beforeMatch.lastIndexOf("(");
-                const closeParenIndex = beforeMatch.lastIndexOf(")");
-
-                // Ensure the colon is part of a value and not a key
-                const isValidColon =
-                  colonIndex > openParenIndex &&
-                  colonIndex > closeParenIndex &&
-                  (commaIndex < colonIndex || commaIndex === -1);
-
-                // Determine if the match is within a valid context for conversion
-                if (
-                  isScssVariable ||
-                  isInsideCalc ||
-                  (isInsideCssProperty && colonIndex > commaIndex) ||
-                  (isInsideScssMap && isValidColon)
-                ) {
-                  const newValue = (parseFloat(p1) * 0.625).toFixed(3);
-                  return `${newValue}rem`;
+                if (isClassName) {
+                  return match;
                 }
 
-                // If not in a valid context, return the match as is
-                return match;
+                const newValue = (parseFloat(p1) * 0.625).toFixed(3);
+                console.log(`Converted value: ${newValue}rem`);
+                return `${newValue}rem`;
               }
             );
+
+            // Restore '%%rem"' back to 'rem"'
+            this.scssOutput = this.scssOutput.replace(/%%rem"/g, 'rem"');
+            this.scssOutput = this.scssOutput.replace(/%%rem'/g, "rem'");
+
+            // Replace the special character back with enters
+            this.scssOutput = this.scssOutput.replace(/%%enter%%/g, "\n");
+            console.log("Final output: ", this.scssOutput);
           },
           clearInputOutput() {
             this.scssInput = "";
