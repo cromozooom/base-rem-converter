@@ -1,5 +1,9 @@
 // some comments rem remains as it is: 23rem converter
 body {
+  &__init {
+    --size: #{$size};
+    padding: 0 0.5rem; // this fails
+  }
   --test: 2rem; // this change value 2
   font-size: 1rem; // this change value 1
   .test-1 {
@@ -8,6 +12,7 @@ body {
     .test-1 {
       width: 30rem; // this change 30
       height: calc(100vh - 10rem); // this change value 10
+      padding: 0 0.5rem; // replace 0.5
     }
   }
 }
