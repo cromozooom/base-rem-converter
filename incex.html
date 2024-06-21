@@ -91,7 +91,7 @@
             <button
               :class="scssInput === '' ? 'opacity-45 cursor-not-allowed' : ''"
               @click="convertAndCopy()"
-              class="text-white bg-yellow-700 flex gap-2 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800"
+              class="text-white bg-grey-700 flex gap-2 hover:bg-grey-800 focus:ring-4 focus:ring-grey-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-grey-600 dark:hover:bg-grey-700 focus:outline-none dark:focus:ring-grey-800"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -201,39 +201,49 @@
           scssInput: "",
           scssOutput: "",
           convertScss() {
-            const regex = /(\d*\.?\d+)rem\b/g;
+            const regex = /(\b\d*\.?\d+)rem\b/g;
             this.scssOutput = this.scssInput.replace(
               regex,
               (match, p1, offset, string) => {
-                // Check if the match is within a CSS property value or an SCSS map value
                 const beforeMatch = string.slice(0, offset);
                 const afterMatch = string.slice(offset + match.length);
-                // Determine if the match is part of a key or a value
+                // Split the input by lines to better detect context
+                const lines = beforeMatch.split("\n");
+                const currentLine = lines[lines.length - 1].trim();
+                // Check if the match is within a CSS property value, an SCSS map value, or an SCSS variable
+                const isScssVariable = /^\$/.test(currentLine);
                 const isInsideCssProperty =
                   beforeMatch.includes("{") &&
                   beforeMatch.lastIndexOf("{") > beforeMatch.lastIndexOf("}");
                 const isInsideScssMap =
                   beforeMatch.includes("(") &&
                   beforeMatch.lastIndexOf("(") > beforeMatch.lastIndexOf(")");
+                console.log(`Match: ${match}`);
+                console.log(`isScssVariable: ${isScssVariable}`);
+                console.log(`isInsideCssProperty: ${isInsideCssProperty}`);
+                console.log(`isInsideScssMap: ${isInsideScssMap}`);
+                console.log(`Current Line: ${currentLine}`);
+                console.log(`------------------------------------`);
                 // Find the last colon before the match
                 const colonIndex = beforeMatch.lastIndexOf(":");
                 const commaIndex = beforeMatch.lastIndexOf(",");
                 const openParenIndex = beforeMatch.lastIndexOf("(");
                 const closeParenIndex = beforeMatch.lastIndexOf(")");
-                // Determine if the colon is valid (part of a value and not a key)
+                // Ensure the colon is part of a value and not a key
                 const isValidColon =
                   colonIndex > openParenIndex &&
                   colonIndex > closeParenIndex &&
                   (commaIndex < colonIndex || commaIndex === -1);
-                // Determine if we are in a CSS property value context or an SCSS map value context
+                // Determine if the match is within a valid context for conversion
                 if (
+                  isScssVariable ||
                   (isInsideCssProperty && colonIndex > commaIndex) ||
                   (isInsideScssMap && isValidColon)
                 ) {
                   const newValue = (parseFloat(p1) * 0.625).toFixed(3);
                   return `${newValue}rem`;
                 }
-                // If not within a value context, return the match as is
+                // If not in a valid context, return the match as is
                 return match;
               }
             );
